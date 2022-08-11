@@ -1,4 +1,4 @@
-package day06;
+package day07;
 
 import java.util.Scanner;
 
@@ -17,7 +17,7 @@ public class Ex07_while {
 		//Math.random() =  double 타입의 0.0 ~ 0.9까지 만들어줌.
 		int randomNumber = (int)(Math.random() * 10) + 1; 
 //		System.out.println("randomNumber : " + randomNumber);
-		
+		int cnt = 0;
 		while(true) {
 			System.out.print("숫자 입력>>");
 			int inputNumber = scan.nextInt();
@@ -26,8 +26,11 @@ public class Ex07_while {
 				System.out.println("종료");
 				break;
 			}
-			else
+			else {
 				System.out.println("다른 숫자 입력했습니다.");
+				cnt++;
+			}
 		}
+		System.out.println(cnt + "번의 시도를 했습니다.");
 	}
 }

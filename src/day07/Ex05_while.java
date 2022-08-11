@@ -1,4 +1,4 @@
-package day06;
+package day07;
 
 public class Ex05_while {
 	public static void main(String[] args) {
