@@ -42,7 +42,6 @@ public class Ex04_vendingMachine2 {
 			else {
 				System.out.println("취소되었습니다.");
 			}
-			
 			System.out.println("남은 커피의 재고는 " + stock + "잔 입니다.");
 			
 			if(stock <= 0) {
