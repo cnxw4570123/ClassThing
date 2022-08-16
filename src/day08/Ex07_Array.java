@@ -37,11 +37,14 @@ public class Ex07_Array {
 		strArr1[1] = "EFG";
 		System.out.println("strArr1[1] :" + strArr1[1]);
 		
+		char[] charArr = new char[2];
+		System.out.println("char [0] : " + charArr[0] + "입니다.");
 		/*
 		 * 나중에 사용하다가 배열 사이즈를 넘는 정보를 저장해야 하는 경우에는??
 		 * 이 때는 기존 배열의 정보를 더 큰 사이즈의 배열에 저장하는 경우 밖에 없는가?
+		 * 리스트 사용하기!
 		 */
-		
+
 	}
 
 }
