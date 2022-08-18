@@ -1,6 +1,5 @@
 package day10;
 
-import java.awt.Menu;
 import java.util.Scanner;
 
 public class Ex04_CoffeeMachine {
@@ -91,13 +90,14 @@ public class Ex04_CoffeeMachine {
 //		System.out.println("이고\n총 주문 금액은 " + sum + "원 입니다.");
 
 		Scanner sc = new Scanner(System.in);
-		String[] menu = { "바닐라라떼", "카페라떼","아이스티", "아메리카노", "종료" };
+		String[] menu = { "바닐라라떼", "카페라떼", "아이스티", "아메리카노", "종료" };
 		int[] price = { 5000, 4000, 3000, 2500 };
-		
+
 		int[] order = new int[menu.length - 1]; // 몇 개 시켰는지 체크하기 위한 용도
 		int sum = 0;
 		int valid;
 		boolean run = true;
+		boolean check = false;
 		while (run) {
 			System.out.println("=====================================================");
 			for (int i = 0; i < menu.length; i++) {
@@ -116,24 +116,28 @@ public class Ex04_CoffeeMachine {
 				if (valid == 1) {
 					System.out.println("주문 되었습니다.");
 					order[choice - 1]++;
+					check = true;
 				} else if (valid == 2)
 					System.out.println("취소되었습니다.");
 			} else if (choice == menu.length) {
 				System.out.println("[종료 선택]");
 				System.out.println("주문이 종료되었습니다.");
 				run = false;
-			}else {
+			} else {
 				System.out.println("1 ~ " + menu.length + "까지의 수를 입력해주세요.");
-			} 
-		}
-		System.out.print("주문하신 메뉴는 ");
-		for (int i = 0; i < order.length; i++) {
-			if (order[i] > 0) {
-				System.out.print("[" + menu[i] + " " + order[i] + "잔]");
-				sum += order[i] * price[i];
 			}
 		}
-		System.out.println("이고\n총 주문 금액은 " + sum + "원 입니다.");
+
+		if (check) {
+			System.out.print("주문하신 메뉴는 ");
+			for (int i = 0; i < order.length; i++) {
+				if (order[i] > 0) {
+					System.out.print("[" + menu[i] + " " + order[i] + "잔]");
+					sum += order[i] * price[i];
+				}
+			}
+			System.out.println("이고\n총 주문 금액은 " + sum + "원 입니다.");
+		}
 	}
 
 }
