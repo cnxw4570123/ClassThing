@@ -2,7 +2,7 @@ package day11;
 
 import java.util.Scanner;
 
-public class Ex04_CoffeeMachineSplit {
+public class Ex02_CoffeeMachineSplit {
 
 	public static void main(String[] args) {
 		Scanner sc = new Scanner(System.in);
