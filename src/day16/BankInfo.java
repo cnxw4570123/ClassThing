@@ -21,11 +21,13 @@ public class BankInfo {
 		return balance;
 	}
 	public void setBalance(int balance) {
+		if(balance < 0)
+			balance = 0;
 		this.balance = balance;
 	}
 	@Override
 	public String toString() {
-		return "BankInfo [accountNumber=" + accountNumber + ", clientName=" + clientName + ", balance=" + balance + "]";
+		return "[계좌번호=" + accountNumber + "] [고객이름=" + clientName + "] [잔액=" + balance + "]\n";
 	}
 	
 	
