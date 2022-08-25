@@ -18,9 +18,7 @@ public class Prob3003 {
 		for(int i = 0; i < chess.length; i++) {
 			chess[i] = Integer.parseInt(st.nextToken());
 		}
-		if (chess[0] != 1) {
-			bw.write(chess[0] - );
-		}
+		
 	}
 
 }
