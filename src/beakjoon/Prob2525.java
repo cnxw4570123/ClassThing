@@ -7,22 +7,27 @@ import java.io.InputStreamReader;
 import java.io.OutputStreamWriter;
 import java.util.StringTokenizer;
 
-public class Prob3003 {
+public class Prob2525 {
 
 	public static void main(String[] args) throws IOException{
 		BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
 		BufferedWriter bw = new BufferedWriter(new OutputStreamWriter(System.out));
-		StringTokenizer st = new StringTokenizer(br.readLine());
-		int[] chess = new int[6];
-		int[] corChess = {1, 1, 2, 2, 2, 8};
+		StringTokenizer st = new StringTokenizer(br.readLine());	
 		
-		for(int i = 0; i < chess.length; i++) {
-			chess[i] = Integer.parseInt(st.nextToken());
+		int A = Integer.parseInt(st.nextToken());
+		int B = Integer.parseInt(st.nextToken());
+		int C = Integer.parseInt(br.readLine());
+		int min, hour;
+		if(B + C >= 60) {
+			hour = ((B + C) / 60) + A;
+			if(hour >= 24) 
+				hour = hour % 24;
+			min = (B + C) % 60;
+		} else {
+			hour = A; 
+			min = B + C;
 		}
-		
-		for(int i = 0; i < chess.length; i++) {
-				bw.write(corChess[i] - chess[i] +" ");
-		}
+		bw.write(hour + " " + min);
 		bw.flush();
 		bw.close();
 	}

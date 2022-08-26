@@ -44,8 +44,7 @@ public class ProductInfo {
 	}
 	@Override
 	public String toString() {
-		return "[상품번호]" + prodNum + " [상품이름]" + ProdName + " [상품수량]" + prodVol + " [상품종류]"
-				+ prodType + " [상품가격]" + prodPrice;
+		return "[상품번호]" + prodNum + " [상품이름]" + ProdName + " [상품수량]" + prodVol + "개 [상품가격]" + prodPrice + "원 [상품종류]" + prodType;
 	}
 	
 	
