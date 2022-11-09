@@ -22,7 +22,7 @@ public class Mservice {
 	public String selectIdCheck(String inputId) {
 		System.out.println("msvc selectIdCheck() 호출");
 		String checkResult = "";
-		String selectRs = mDao.selectMemberID(inputId);
+		String selectRs = mDao.selectMemberDto(inputId).getMid();
 		System.out.println("결과 " +selectRs);
 		if(selectRs == null) {
 			checkResult = "ok";
@@ -32,4 +32,8 @@ public class Mservice {
 		return checkResult;
 	}
 
+	public MemberDto selectMemInfo(String sesId) {
+		MemberDto member = mDao.selectMemberDto(sesId);
+		return member;
+	}
 }

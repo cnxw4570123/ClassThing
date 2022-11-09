@@ -59,10 +59,10 @@ public class MemberDao {
 		return loginId;
 	}
 
-	public String selectMemberID(String inputId) {
-		System.out.println("mdao selectMemberId()");
-		String sql = "SELECT MID FROM MEMBERS WHERE MID = ?";
-		String selectRs = null;
+	public MemberDto selectMemberDto(String inputId) {
+		System.out.println("mdao selectMemberDto()");
+		String sql = "SELECT * FROM MEMBERS WHERE MID = ?";
+		MemberDto Member = null;
 		try {
 			Connection con = getConnection();
 			pstmt = con.prepareStatement(sql);
@@ -70,13 +70,13 @@ public class MemberDao {
 			
 			rs = pstmt.executeQuery();
 			if(rs.next()) {
-				selectRs = rs.getString(1);
+				Member = new MemberDto(rs.getString(1), rs.getString(2), rs.getString(3), rs.getString(4),
+						rs.getString(5), rs.getString(6), rs.getString(7));
 			}
 		} catch(Exception e) {
 			e.printStackTrace();
 		}
-		return selectRs;
+		return Member;
 	}
-	
-	
+
 }

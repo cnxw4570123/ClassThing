@@ -12,8 +12,6 @@
 		location.href ="${pageContext.request.contextPath}/Member/MemberLogin.jsp";
 	}
 </script>
-<style type="text/css">
-</style>
 <meta charset="UTF-8">
 <title>Insert title here</title>
 <link rel="stylesheet"
@@ -30,20 +28,23 @@
 
 	<div class="contents">
 		<h3 style="text-align:center;"> 글 작성</h3>
-		<form action="${pageContext.request.contextPath}/BoardWrite" method="post">
+		<form action="${pageContext.request.contextPath}/BoardUpdate" method="post">
 			<table>
 				<tr>
 					<th>글제목</th>
-					<td><input type="text" name="btitle"></td>
+					<td><input type="text" name="btitle" value="${requestScope.board.bTitle}"></td>
 					<td><input type="hidden" name="bwriter" value="${sessionScope.uid}">
 				</tr>
 				<tr>
 					<th>글내용</th>
-					<td><textarea rows="" cols="" name="bcontent"></textarea></td>
+					<td><textarea rows="" cols="" name="bcontent">
+					${requestScope.board.bContent}
+					</textarea></td>
 				</tr>
 				<tr>
 					<th colspan="2">
-						<input type="submit" value="글 작성">
+						<input type="hidden" value="${requestScope.board.bNo}" name="bno">
+						<input type="submit" value="수정하기">
 					</th>
 				</tr>
 			</table>

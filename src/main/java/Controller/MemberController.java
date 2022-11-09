@@ -2,6 +2,7 @@ package Controller;
 
 import java.io.IOException;
 
+import javax.servlet.RequestDispatcher;
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
@@ -15,7 +16,7 @@ import service.Mservice;
 /**
  * Servlet implementation class MemberController
  */
-@WebServlet({"/MemberController", "/MemberLogin", "/MemberJoin" , "/MemberIdCheck", "/MemberLogout"})
+@WebServlet({"/MemberController", "/MemberLogin", "/MemberJoin" , "/MemberIdCheck", "/MemberLogout", "/MemberInfo"})
 public class MemberController extends HttpServlet {
 	private static final long serialVersionUID = 1L;
        
@@ -31,6 +32,7 @@ public class MemberController extends HttpServlet {
 	 */
 	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 		String url = request.getServletPath();
+		RequestDispatcher dispatcher = null;
 		request.setCharacterEncoding("UTF-8");
 		response.setContentType("text/html; charset=UTF-8");
 		HttpSession session = request.getSession();
@@ -92,7 +94,17 @@ public class MemberController extends HttpServlet {
 			String checkResult = msvc.selectIdCheck(inputId);
 			response.getWriter().print(checkResult);
 			break;
+		case "/MemberInfo":
+			System.out.println("회원 정보 페이지 요청");
+			String sesId = (String)session.getAttribute("uid");
+			MemberDto memInfoRes = msvc.selectMemInfo(sesId);
+			
+			request.setAttribute("member", memInfoRes);
+			dispatcher = request.getRequestDispatcher("/Member/MemberInfo.jsp");
+			dispatcher.forward(request, response);
+			break;
 		}
+		
 	}
 
 	/**

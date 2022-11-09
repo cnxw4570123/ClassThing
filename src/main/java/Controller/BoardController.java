@@ -18,7 +18,7 @@ import service.Bservice;
 /**
  * Servlet implementation class BoardController
  */
-@WebServlet({"/BoardList", "/BoardWrite", "/BoardInto", "/BoardSearch"})
+@WebServlet({"/BoardList", "/BoardWrite", "/BoardInto", "/BoardSearch","/BoardModify", "/BoardUpdate", "/BoardDelete"})
 public class BoardController extends HttpServlet {
 	private static final long serialVersionUID = 1L;
        
@@ -84,7 +84,7 @@ public class BoardController extends HttpServlet {
 			int bno = Integer.parseInt(request.getParameter("bno"));
 			// 1. 글 번호로 select
 			System.out.println(bno);
-			board = bsvc.selectOneBoard(bno);
+			board = bsvc.selectOneBoard(bno, true);
 			request.setAttribute("content", board);
 			
 			// 2. 해당 글 담긴 페이지로 forwarding
@@ -112,6 +112,58 @@ public class BoardController extends HttpServlet {
 			dispatcher = request.getRequestDispatcher("/Board/BoardList.jsp");
 			dispatcher.forward(request, response);
 			break;
+			
+		case "/BoardModify":
+			System.out.println("글 수정 요청");
+			int mBno = Integer.parseInt(request.getParameter("bno"));
+			System.out.println(mBno);
+			BoardDto mbContent = bsvc.selectOneBoard(mBno, false);
+			
+			request.setAttribute("board", mbContent);
+			dispatcher = request.getRequestDispatcher("/Board/BoardModify.jsp");
+			dispatcher.forward(request, response);
+			break;
+			
+		case "/BoardUpdate":
+			System.out.println("글 업데이트 요청");
+			int uBno = Integer.parseInt(request.getParameter("bno"));
+			String uBtitle = request.getParameter("btitle");
+			String uBcontent = request.getParameter("bcontent");
+			board = new BoardDto();
+			board.setbNo(uBno); board.setbTitle(uBtitle); board.setbContent(uBcontent);
+			int updateResult = bsvc.updatePage(board, true);
+			if(updateResult > 0) {
+				response.sendRedirect(contextPath + "/BoardList");
+			} else {
+				response.getWriter().print("<script>");
+				response.getWriter().print("alert('글 수정에 실패했습니다.');");
+				response.getWriter().print("history.back();");
+				response.getWriter().print("</script>");
+			}
+			break;
+			
+		case "/BoardDelete":
+			System.out.println("글 삭제 요청");
+			int dBno = Integer.parseInt(request.getParameter("bno"));
+			board = new BoardDto();
+			board.setbNo(dBno);
+			int delRs = bsvc.updatePage(board, false);
+			if(delRs > 0) {
+				System.out.println("삭제성공");
+				response.getWriter().print("<script>");
+				response.getWriter().print("alert('글 삭제성공');");
+				response.getWriter().print("location.href='"+contextPath+"/BoardList';");
+				response.getWriter().print("</script>");
+			} else {
+				System.out.println("삭제실패");
+				response.getWriter().print("<script>");
+				response.getWriter().print("alert('글 삭제실패');");
+				response.getWriter().print("history.back();");
+				response.getWriter().print("</script>");
+			}
+			break;
+			
+			
 		}
 		
 	}

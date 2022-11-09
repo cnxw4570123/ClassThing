@@ -25,7 +25,7 @@ public class BoardDao {
 		BoardDto board = null;
 		
 		String Sql = "SELECT BNO, BTITLE, BWRITER, BCONTENT, TO_CHAR(BDATE, 'YYYY-MM-DD'), BHITS, BFILENAME, BSTATE FROM BOARDS"
-				+ " ORDER BY BNO DESC";
+				+ " WHERE BSTATE ='0' ORDER BY BNO DESC";
 		try {
 			Connection con = getConnection();
 			pstmt = con.prepareStatement(Sql);
@@ -176,6 +176,32 @@ public class BoardDao {
 			e.printStackTrace();
 		}
 		return boardList;
+	}
+
+	public int updateBoardContent(BoardDto board, boolean upDel) {
+		int updateRs = 0;
+		String sql = "";
+		if(upDel) {
+		sql = "UPDATE BOARDS SET BTITLE = ?, BCONTENT =? WHERE BNO = ?";
+		} else {
+		sql = "UPDATE BOARDS SET BSTATE = '1' WHERE BNO = ?";
+		}
+		System.out.println(sql);
+		try {
+			Connection con = getConnection();
+			pstmt = con.prepareStatement(sql);
+			if(upDel) {
+				pstmt.setString(1, board.getbTitle());
+				pstmt.setString(2, board.getbContent());
+				pstmt.setInt(3, board.getbNo());
+			} else {
+				pstmt.setInt(1, board.getbNo());
+			}
+			updateRs = pstmt.executeUpdate();
+		} catch(Exception e) {
+			e.printStackTrace();
+		}
+		return updateRs;
 	}
 
 }

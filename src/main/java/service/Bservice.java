@@ -1,45 +1,49 @@
 package service;
 
 import java.util.ArrayList;
-import java.util.StringTokenizer;
+//import java.util.StringTokenizer;
 
 import dao.BoardDao;
 import dto.BoardDto;
 
 public class Bservice {
 	private BoardDao bDao = new BoardDao();
-	
+
 	public ArrayList<BoardDto> selectBoardInfo() {
 		System.out.println("Bservice selectBoardInfo() 호출");
-		ArrayList<BoardDto> BoardList =  bDao.selectBoard();
+		ArrayList<BoardDto> BoardList = bDao.selectBoard();
 		return BoardList;
 	}
 
 	public int insertBoard(BoardDto board) {
-		int insertResult = 0; 
+		int insertResult = 0;
 		int bno = bDao.selectMaxBno() + 1;
-		if(bno > 0) {
+		if (bno > 0) {
 			board.setbNo(bno);
 			insertResult = bDao.insertBoardContent(board);
 		}
-		
+
 		return insertResult;
 	}
 
-	public BoardDto selectOneBoard(int bno) {
+	public BoardDto selectOneBoard(int bno, boolean b) {
 		System.out.println("bsvc selectOneBoard()실행");
 		BoardDto board = null;
 		board = bDao.selectOneContent(bno);
-		int updateResult = bDao.updateHits(bno);
-		if(updateResult > 0) {
-			
-			String bText = board.getbContent();
-			String afterSt = "";
-			StringTokenizer st = new StringTokenizer(bText, "\n");
-			while(st.hasMoreTokens()) {
-				afterSt += st.nextToken()+ "<br>";
+		if (b) {
+			int updateResult = bDao.updateHits(bno);
+			if (updateResult > 0) {
+				String bText = board.getbContent();
+				String afterSt = "";
+//			StringTokenizer st = new StringTokenizer(bText, "\n");
+//			while(st.hasMoreTokens()) {
+//				afterSt += st.nextToken()+ "<br>";
+//			}
+				afterSt = bText.replace(" ", "&nbsp");
+				afterSt = afterSt.replace("\n", "<br>");
+
+				board.setbContent(afterSt);
 			}
-			board.setbContent(afterSt);
 			return board;
 		} else {
 			System.out.println("업데이트 실패");
@@ -52,5 +56,11 @@ public class Bservice {
 		ArrayList<BoardDto> boardList = bDao.selectCertainBoardList(searchType, searchText);
 		return boardList;
 	}
-	
+
+	public int updatePage(BoardDto board, boolean b) {
+		System.out.println("bsvc updatePage()호출");
+		int upRs = bDao.updateBoardContent(board, b);
+		return upRs;
+	}
+
 }
