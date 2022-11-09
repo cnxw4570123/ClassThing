@@ -1,0 +1,47 @@
+@charset "UTF-8";
+
+div.header, div.footer{
+		background-color: gray;
+		text-align: center;
+		padding: 15px;
+		margin-bottom: 5px;
+	}
+	div.menu{
+	padding: 10px;
+	background-color: black;
+	margin-bottom: 4px;
+	}
+	
+	div.menu > ul > li > a{
+		text-decoration: none;
+		color: white;
+	}
+	
+	div.menu > ul {
+		padding-left : 10px;
+	}
+	
+	div.menu > ul > li{
+		display: inline-block;
+		font-weight: bold;
+		color: white;
+	}
+	div.contents{
+		border: 2px solid gray;
+		padding: 15px;
+		margin-bottom: 5px;
+	}
+	table, th, td{
+		margin : 0 auto;
+		border-collapse: collapse;
+	}
+	td, th{
+		/*border: 2px solid navy;*/
+		padding: 10px;
+	}
+	input[type="text"],input[type="date"],input[type="password"], textarea{
+		
+		border: 0px;
+		border-bottom: 2px solid teal;
+	}
+	
