@@ -88,12 +88,7 @@
 											value="${requestScope.board.bhits}">
 									</div>
 								</div>
-								<%-- onsubmit을 활용한 수정 방법 --%> 
-  								<%-- <form class="user" action="${pageContext.request.contextPath}/BoardRevise" method="post" onsubmit="return reviseContent()"
-									enctype="multipart/form-data"> --%>
-								<%-- onclick을 활용한 수정 방법 --%>
- 								<%-- <form class="user" action="${pageContext.request.contextPath}/BoardRevise" method="post"
-									enctype="multipart/form-data"> --%>
+								<%--display:none방식 --%>
 									<form class="user" action="${pageContext.request.contextPath}/BoardRevise" method="post"
 									enctype="multipart/form-data">
 									<div class="form-group">
@@ -125,16 +120,6 @@
 															class="btn btn-primary btn-user btn-block"
 															onclick="location.href='${pageContext.request.contextPath}/BoardList';">글목록</button>
 													</div>
-													<%-- onsubmit을 활용한 수정 방법 --%>
- 													<%-- <div class="col-sm-6 mb-3 mb-sm-0">
-														<button type="submit"
-															class="btn btn-primary btn-user btn-block">수정하기</button>
-													</div> --%>
-													<%-- onclick을 활용한 수정 방법 --%>
- 													<%-- <div class="col-sm-6 mb-3 mb-sm-0">
-														<button type="button" onclick="reviseContent(this)"
-															class="btn btn-primary btn-user btn-block">글수정</button>
-													</div>--%>
 													<%-- 수정 버튼 display:none 방법 --%>
 													<div class="col-sm-6 mb-3 mb-sm-0">
 														<button type="button"
@@ -159,9 +144,24 @@
 											</c:otherwise>
 										</c:choose>
 										<hr>
-
+										
 									</div>
 								</form>
+								<div class="row">
+											<div
+												class="col-lg-7 ml-auto mr-auto align-items-center text-center pb-3"
+												style="background-color: white">
+												<button class="btn border-primary text-primary"
+													onclick="boardLike('0')">
+													<i class="p-0 far fa-thumbs-up">추천</i><span id="likeCounts"></span>
+												</button>
+												<button class="btn border-primary text-primary"
+													onclick="boardLike('1')">
+													<i class="p-0 far fa-thumbs-down">비추천</i><span id="hateCounts"></span>
+												</button>
+											</div>
+										</div>
+											<hr>
 								<!-- 댓글 출력 -->
 								<div id="replyListArea">
 								
@@ -252,34 +252,6 @@
 		}
 	</script>
 	<script>
-	//onsubmit을 활용한 방법
-/* 	let revContent = false;
-	const reviseContent = () => {
-		if(!revContent){
-			console.log("글 수정 버튼 클릭");
-			$('#revTitle').removeAttr('readonly');
-			$('#revContent').removeAttr('readonly');
-			revContent = true;
-			return false;
-		} else{
-			return true;
-		}
-	} */
-	
-	//onclick을 활용한 방법
-/* 	let revBtn = false; //페이지가 리로드될 때마다 false로 바뀜.
-	const reviseContent = (btnObj) => {
-		console.log('revBtn : ' + revBtn);
-		if(!revBtn){
-		console.log("글 수정 버튼 클릭");
-		$('#revTitle').removeAttr('readonly');
-		$('#revContent').removeAttr('readonly');
-		btnObj.innerText = '수정하기';
-		revBtn = true;
-		} else{ //submit으로 바뀌자 마자 바로 submit 실행됨
-		btnObj.setAttribute('type', 'submit');
-		}
-	} */
 	const undoTitle = $('#revTitle').val();
 	const undoContent = $('#revContent').val();
 	
@@ -332,7 +304,41 @@
     let loginID = '${sessionScope.loginID}';
     $(document).ready(function(){
     	replyList(cbno);
+    	stateCount(cbno);
     });
+    
+ 	// 추천수 조회
+    //좋아요와 싫어요 개수 count하는 기능
+    function stateCount(cbno){
+    	$.ajax({
+    		type:"get",
+    		url:"${pageContext.request.contextPath}/BoardStateCount",
+    		data:{"lbno": cbno},
+    		dataType:"json", //두가지 정보 받아올 것. 추천과 비추천
+    		success: function(selectRs){
+    			if(selectRs != null){ //좋아요와 싫어요 출력
+    				console.log(selectRs);
+    				let hate = "";
+    				let like = "";
+    				for(board of selectRs){
+    					console.log(board.lstate);
+						if(board.lstate == '0'){
+							like = board;
+						}else{
+							hate = board;
+						}
+    				}
+    				if(like.lstate != null){
+    				$("#likeCounts").text(like.lcount); //좋아요 개수
+    				}
+    				if(hate.lstate != null){
+    				$("#hateCounts").text(hate.lcount); //싫어요 개수
+    				}
+    			}
+    		}
+    	});
+    }
+    
     
     //댓글 목록 받아오는 기능 
 	function replyList(cbno){
@@ -363,9 +369,6 @@
 									comList[i].ccontent +'</textarea></div>'+
 									'<div class="col-auto">';
 									if(loginID == comList[i].cwriter){
-										//form태그를 활용해서 작성하는 방법
-										/* output +='<button type="button" class="btn btn-sm btn-success btn-user" onclick="revCom('+comList[i].cno+')">수정</button>'+
-												 '<button type="button" class="btn btn-sm btn-danger btn-user" onclick="delCom('+comList[i].cno+')">삭제</btton>';	 */
 										//ajax를 사용하는 방법
 										output +='<button type="button" class="btn btn-sm btn-success btn-user" onclick="revCom('+comList[i].cno+')">수정</button>'+
 												 '<button type="button" class="btn btn-sm btn-danger btn-user" onclick="delCom('+ comList[i].cno +')">삭제</btton>';	
@@ -424,30 +427,36 @@
     	}
     }
     
-    
-    // jquery로 form 태그 선택 후 주소 바꿔서 submit
-	/* 
-    function delCom(cno){
-    	console.log("삭제버튼 수행");
-    	const formObj = $("#comListForm");
-    	formObj.attr("action","${pageContext.request.contextPath}/CommentDelete?cno="+cno);
-    	formObj.submit();
+    function boardLike(lstate){
+    	if(loginID.length > 0){
+    		$.ajax({
+    			type:"get",
+    			url:"${pageContext.request.contextPath}/BoardLike",
+    			data:{
+    				"lbno": cbno,
+    				"lmid": '${sessionScope.loginID}',
+    				"lstate": lstate
+   				},
+   				success:function(insertRs){
+   					//결과
+  					if(insertRs !=null){
+  						if(insertRs == -1){
+  	  						alert("이미 추천/비추천하신 글입니다.")
+  						} else{
+	   					console.log(insertRs);
+	   					stateCount(cbno);
+  						}
+  					} else{
+  						alert(insertRs+"에 실패했습니다.");			
+  					}
+				} 
+   				// 추천 입력
+    		});
+    	} else{
+    		alert("로그인 후 이용가능합니다.");
+    	}
+    	
     }
-    
-    let comRevCk = false;
-	    function revCom(cno){
-		 		let revComment = $("#rcomment"+cno); 
-		    	console.log("댓글 수정 버튼 클릭");
-	    	if(!comRevCk){
-		 		revComment.focus();
-		 		revComment.removeAttr("readonly");
-		 		comRevCk = true;
-	    	} else{
-	    		revComment.attr("type", "submit");
-	    		console.log('수정기능 실행');
-	    	}
-	    }
-    */
     </script>
 </body>
 

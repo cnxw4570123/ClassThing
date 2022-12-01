@@ -14,6 +14,7 @@ import org.springframework.web.multipart.MultipartFile;
 import com.MemberBoard001.dao.BoardDao;
 import com.MemberBoard001.dto.BoardDto;
 import com.MemberBoard001.dto.CommentDto;
+import com.MemberBoard001.dto.LikeDto;
 import com.google.gson.Gson;
 
 @Service
@@ -140,5 +141,64 @@ public class Bservice {
 		}
 		
 		return updateRs;
+	}
+
+	public ArrayList<BoardDto> getMyBoardList(String id) {
+		System.out.println("bsvc getMyBoardList()");
+		ArrayList<BoardDto> myBoardList = new ArrayList<>();
+		try {
+			myBoardList = bDao.selectMyBoardList(id);
+		} catch(Exception e) {
+			e.printStackTrace();
+		}
+		return myBoardList;
+	}
+
+	public ArrayList<CommentDto> getMyCommentList(String id) {
+		System.out.println("bsvc getMyCommentList()");
+		ArrayList<CommentDto> myComments = new ArrayList<>();
+		
+		try {
+			myComments = bDao.selectMyCommentList(id);
+		}catch(Exception e) {
+			e.printStackTrace();
+		}
+		
+		return myComments;
+	}
+
+	public String getBoardLike(int lbno) {
+		System.out.println("bsvc getBoardLike()");
+		Gson gson = new Gson();
+		ArrayList<LikeDto> countInfo = new ArrayList<LikeDto>();
+		try {
+			countInfo = bDao.selectBoardLike(lbno);
+		}catch(Exception e) {
+			e.printStackTrace();
+		}
+		String result = gson.toJson(countInfo);
+		return result;
+	}
+
+	public int boardStateInsert(LikeDto like) {
+		System.out.println("bsvc boardLikeInsert()");
+		int insertRs = 0;
+		try {
+			//먼저 조회 후 없을 때만 insert
+			String selectRs = bDao.selectLike(like);
+			if(selectRs == null) { // 기존에 추천을 하지 않았으면
+				insertRs = bDao.insertBoardState(like);
+			} else { // 추천을 했으면
+				insertRs = -1;
+			}
+		}catch(Exception e) {
+			e.printStackTrace();
+		}
+		
+		return insertRs;
+	}
+
+	public ArrayList<BoardDto> getMyBoardList(ArrayList<CommentDto> commentList) {
+		return null;
 	}
 }

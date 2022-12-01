@@ -1,6 +1,7 @@
 package com.MemberBoard001.controller;
 
 import java.io.IOException;
+import java.util.ArrayList;
 
 import javax.servlet.http.HttpSession;
 
@@ -11,7 +12,10 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
+import com.MemberBoard001.dto.BoardDto;
+import com.MemberBoard001.dto.CommentDto;
 import com.MemberBoard001.dto.MemberDto;
+import com.MemberBoard001.service.Bservice;
 import com.MemberBoard001.service.Mservice;
 
 
@@ -94,12 +98,29 @@ public class MemberController {
 		return mav;
 	}
 	
+	@Autowired
+	private Bservice bsvc;
+	
 	@RequestMapping(value="MemberInfo")
 	public ModelAndView memberInfo() {
 		ModelAndView mav = new ModelAndView();
 		String id = (String) session.getAttribute("loginID");//세션에 있는 아이디 추출
-		MemberDto member = msvc.getMemberInfo(id); //세션 아이디로 select 수행
+		MemberDto member = msvc.getMemberInfo(id); //1.세션 아이디로 회원정보 찾기 수행
 		mav.addObject("memberInfo", member);
+		
+		//2. 아이디로 게시글 찾기
+		ArrayList<BoardDto> boardList = bsvc.getMyBoardList(id);
+		System.out.println(boardList);
+		mav.addObject("myBoards", boardList);
+		
+		//3. 아이디로 댓글 찾기(댓글 누르면 해당 글의 해당 위치로 forwarding)
+		ArrayList<CommentDto> commentList = bsvc.getMyCommentList(id);
+		System.out.println(commentList);
+		
+		//4. 글목록 다 가져오자
+		ArrayList<BoardDto> myBoardComList = bsvc.getMyBoardList(commentList);
+		
+		mav.addObject("myComments", commentList);
 		mav.setViewName("Member/MemberInfo");
 		return mav;
 	}

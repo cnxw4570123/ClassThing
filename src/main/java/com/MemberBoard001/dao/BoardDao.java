@@ -10,6 +10,7 @@ import org.apache.ibatis.annotations.Update;
 
 import com.MemberBoard001.dto.BoardDto;
 import com.MemberBoard001.dto.CommentDto;
+import com.MemberBoard001.dto.LikeDto;
 
 public interface BoardDao {
 
@@ -44,4 +45,19 @@ public interface BoardDao {
 
 	@Update("UPDATE COMMENTS SET CCONTENT = #{ccontent} WHERE CNO = ${cno}")
 	int updateComment(@Param("cno") int cno, @Param("ccontent") String ccontent);
+	
+	@Select("SELECT BNO, BTITLE, BDATE, BHITS FROM BOARDS WHERE BWRITER = #{id}")
+	ArrayList<BoardDto> selectMyBoardList(String id);
+	
+	@Select("SELECT C_BNO AS CBNO, CCONTENT, CDATE, CHITS FROM COMMENTS WHERE CWRITER = #{id}")
+	ArrayList<CommentDto> selectMyCommentList(String id);
+
+	@Select("SELECT LSTATE, COUNT(*) AS LCOUNT FROM BOARDLIKE WHERE LBNO =${lbno} GROUP BY LSTATE ")
+	ArrayList<LikeDto> selectBoardLike(int lbno);
+
+	@Insert("INSERT INTO BOARDLIKE(LBNO, LMID, LSTATE) VALUES(${lbno},#{lmid},#{lstate})")
+	int insertBoardState(LikeDto like);
+
+	@Select("SELECT LMID FROM BOARDLIKE WHERE LBNO = ${lbno} AND LMID = #{lmid}")
+	String selectLike(LikeDto like);
 }

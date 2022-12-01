@@ -15,6 +15,7 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import com.MemberBoard001.dto.BoardDto;
 import com.MemberBoard001.dto.CommentDto;
+import com.MemberBoard001.dto.LikeDto;
 import com.MemberBoard001.service.Bservice;
 
 @Controller
@@ -153,6 +154,32 @@ public class BoardController {
 		
 		if(delRs > 0) {
 			result ="done";
+		}
+		return result;
+	}
+	
+	@RequestMapping(value="/BoardStateCount")
+	public @ResponseBody String boardStateCount(int lbno) {
+		System.out.println("상태 개수 출력 기능 호출");
+		String selectRs = bsvc.getBoardLike(lbno);
+		System.out.println(selectRs);
+		return selectRs;
+	}
+	
+	
+	@RequestMapping(value="/BoardLike") //좋아요나 싫어요 버튼 누르면
+	public @ResponseBody String boardLike(LikeDto like) {
+		String result = "비추천";
+		if(like.getLstate().equals("0")) {
+			result="추천";
+		}
+		System.out.println("좋아요 기능 호출");
+		System.out.println(like);
+		
+		//구현할 기능 -> 먼저 같은 아이디와 글에 추천이 있는지 조회 후 없으면 추천 삽입
+		int insertRs = bsvc.boardStateInsert(like);
+		if(insertRs == -1) {
+			result= insertRs +"";
 		}
 		return result;
 	}

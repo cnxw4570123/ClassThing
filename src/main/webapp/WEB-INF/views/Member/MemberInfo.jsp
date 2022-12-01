@@ -21,7 +21,15 @@
 
     <!-- Custom styles for this template-->
     <link href="${pageContext.request.contextPath }/resources/css/sb-admin-2.min.css" rel="stylesheet">
-
+	<style>
+	.d-none{
+		display:none;
+	}
+	.tr_click:hover{
+		color:blue;
+		cursor:pointer;
+	}
+	</style>
 </head>
 
 <body id="page-top">
@@ -54,9 +62,12 @@
                     </div>
 
                     <!-- Content Row -->
-					<h2>컨텐츠 영역</h2>
 					<div class="">
 						<table>
+							<tr>
+							<th><img height="100" alt="profile img" class="img-profile rounded-sm"
+					 src="${pageContext.request.contextPath }/resources/MemberProfile/${requestScope.memberInfo.mprofile}"></th>
+							</tr>
 							<tr>
 								<td>아이디: ${requestScope.memberInfo.mid}</td>
 							</tr>
@@ -74,9 +85,112 @@
 							</tr>
 						</table>
 					</div>
-					<img alt="profile img" class="img"
-					 src="${pageContext.request.contextPath }/resources/MemberProfile/${requestScope.memberInfo.mprofile}">
-					 
+					<hr>
+					<button onclick="displayBtn(mBoard)">작성 글 보기</button>
+					<!-- 글내역 출력 -->
+					<div class="d-none" id="mBoard">
+						<div class="card shadow mb-4">
+							<div class="card-header py-3">
+								<h6 class="m-0 font-weight-bold text-primary">글 목록</h6>
+							</div>
+							<div class="card-body">
+								<div class="table-responsive">
+									<table class="table table-bordered" id="dataTable" width="100%"
+										cellspacing="0">
+										<thead>
+											<tr>
+												<th>글번호</th>
+												<th>글제목</th>
+												<th>작성일</th>
+												<th>조회수</th>
+											</tr>
+										</thead>
+										<tfoot>
+												<tr>
+													<th>글번호</th>
+													<th>글제목</th>
+													<th>작성일</th>
+													<th>조회수</th>
+												</tr>
+										</tfoot>
+										<tbody>
+										<c:forEach items="${requestScope.myBoards}" var="board">
+											<tr class="tr_click" onclick="location.href='${pageContext.request.contextPath}/BoardContent?bno=${board.bno}';">
+												<td>${board.bno }</td>
+												<td>${board.btitle }</td>
+												<td>${board.bdate }</td>
+												<td>${board.bhits }</td>
+											</tr>
+											</c:forEach>
+										</tbody>
+									</table>
+								</div>
+							</div>
+						</div>
+					</div>
+
+					<hr>
+					<button onclick="displayBtn(mComment)">작성 댓글 보기</button>
+					<div id="mComment" class="d-none">
+					<div class="card shadow mb-4">
+							<div class="card-header py-3">
+								<h6 class="m-0 font-weight-bold text-primary">댓글 목록</h6>
+							</div>
+							<div class="card-body">
+								<div class="table-responsive">
+									<table class="table table-bordered" id="dataTable" width="100%"
+										cellspacing="0">
+										<thead>
+											<tr>
+												<th>글번호</th>
+												<th>글제목</th>
+												<th>작성일</th>
+												<th>조회수</th>
+											</tr>
+										</thead>
+										<tfoot>
+											<tr>
+												<th>글번호</th>
+												<th>글제목</th>
+												<th>작성일</th>
+												<th>조회수</th>
+											</tr>
+										</tfoot>
+										<tbody>
+											<c:forEach items="${requestScope.myComments}" var="comment">
+											<tr>
+											<%--ajax로 c_bno에 해당하는 글 받아오기 --%>
+											<td colspan="4">d</td>
+											</tr>
+												<tr>
+													<td colspan="3">
+														<table>
+															<thead>
+																<tr>
+																	<th>댓글내용</th>
+																	<th>작성일</th>
+																	<th>추천수</th>
+																</tr>
+															</thead>
+															<tbody>
+																<tr class="tr_click"
+																	onclick="location.href='${pageContext.request.contextPath}/BoardContent?bno=${comment.cbno}';">
+																	<td>${comment.ccontent}</td>
+																	<td>${comment.cdate }</td>
+																	<td>${comment.chits }</td>
+																</tr>
+															</tbody>
+														</table>
+													</td>
+												</tr>
+											</c:forEach>
+										</tbody>
+									</table>
+								</div>
+							</div>
+						</div>
+					</div>
+					
 					
 					
 					
@@ -126,10 +240,12 @@
 	if(msg.length > 0){
 		alert(msg);
 	}
-	
     </script>
-    
-    
+    <script type="text/javascript">
+    	const displayBtn = (msg) => {
+    		$(msg).toggleClass("d-none");
+    	};
+    </script>
 </body>
 
 </html>
