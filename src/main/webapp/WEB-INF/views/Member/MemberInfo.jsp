@@ -144,6 +144,7 @@
 											<tr>
 												<th>글번호</th>
 												<th>글제목</th>
+												<th>작성자</th>
 												<th>작성일</th>
 												<th>조회수</th>
 											</tr>
@@ -152,33 +153,42 @@
 											<tr>
 												<th>글번호</th>
 												<th>글제목</th>
+												<th>작성자</th>												
 												<th>작성일</th>
 												<th>조회수</th>
 											</tr>
 										</tfoot>
-										<tbody>
-											<c:forEach items="${requestScope.myComments}" var="comment">
+										<tbody><%-- 바디에 해당하는 내용을 참조한 게시글만큼 반복 --%>
+												<%-- 이후 해당 글에 맞는 댓글(cbno == bno)이면 댓글 테이블 반복 --%>
+											<c:forEach items="${requestScope.refBoards }" var="refBoard">
 											<tr>
-											<%--ajax로 c_bno에 해당하는 글 받아오기 --%>
-											<td colspan="4">d</td>
+											<td>${refBoard.bno }</td>
+											<td>${refBoard.btitle }</td>
+											<td>${refBoard.bwriter }</td>
+											<td>${refBoard.bdate }</td>
+											<td>${refBoard.bhits }</td>
 											</tr>
 												<tr>
-													<td colspan="3">
+													<td colspan="5">
 														<table>
 															<thead>
-																<tr>
+																<tr colspan="2" style="width:100%;">
+																	<th>↪</th>
 																	<th>댓글내용</th>
 																	<th>작성일</th>
 																	<th>추천수</th>
 																</tr>
 															</thead>
 															<tbody>
-																<tr class="tr_click"
+											<c:forEach items="${requestScope.myComments}" var="comment">
+																<tr  colspan="5" class="tr_click"
 																	onclick="location.href='${pageContext.request.contextPath}/BoardContent?bno=${comment.cbno}';">
 																	<td>${comment.ccontent}</td>
 																	<td>${comment.cdate }</td>
-																	<td>${comment.chits }</td>
+																	<td colspan="2">${comment.chits }</td>
+																	
 																</tr>
+											</c:forEach>
 															</tbody>
 														</table>
 													</td>

@@ -14,7 +14,8 @@ import org.springframework.web.multipart.MultipartFile;
 import com.MemberBoard001.dao.BoardDao;
 import com.MemberBoard001.dto.BoardDto;
 import com.MemberBoard001.dto.CommentDto;
-import com.MemberBoard001.dto.LikeDto;
+import com.MemberBoard001.dto.CommentLikeDto;
+import com.MemberBoard001.dto.BoardLikeDto;
 import com.google.gson.Gson;
 
 @Service
@@ -170,7 +171,7 @@ public class Bservice {
 	public String getBoardLike(int lbno) {
 		System.out.println("bsvc getBoardLike()");
 		Gson gson = new Gson();
-		ArrayList<LikeDto> countInfo = new ArrayList<LikeDto>();
+		ArrayList<BoardLikeDto> countInfo = new ArrayList<BoardLikeDto>();
 		try {
 			countInfo = bDao.selectBoardLike(lbno);
 		}catch(Exception e) {
@@ -180,7 +181,7 @@ public class Bservice {
 		return result;
 	}
 
-	public int boardStateInsert(LikeDto like) {
+	public int boardStateInsert(BoardLikeDto like) {
 		System.out.println("bsvc boardLikeInsert()");
 		int insertRs = 0;
 		try {
@@ -199,6 +200,53 @@ public class Bservice {
 	}
 
 	public ArrayList<BoardDto> getMyBoardList(ArrayList<CommentDto> commentList) {
-		return null;
+		System.out.println("bsvc getMyBoardList()");
+		ArrayList<BoardDto> comRefBoard = new ArrayList<BoardDto>();
+		String c_bno = "";
+		for(int i = 0; i <commentList.size(); i++) {
+			if(commentList.size() - 1 == i) {
+				c_bno += commentList.get(i).getCbno();
+				break;
+			}
+			c_bno += commentList.get(i).getCbno() + ", ";
+		}
+		System.out.println(c_bno); // 참조한 글 번호들 확인
+		
+		try {
+			comRefBoard = bDao.selectComRefBoard(c_bno);
+		} catch(Exception e) {
+			e.printStackTrace();
+		}
+		return comRefBoard;
+	}
+
+	public String getComLikeCount(int cbno) {
+		System.out.println("bsvc getComLikeCount()");
+		ArrayList<CommentLikeDto> comLikeList = new ArrayList<CommentLikeDto>();
+		Gson gson = new Gson();
+		try {
+			comLikeList= bDao.selectComLike(cbno);
+		}catch(Exception e) {
+			e.printStackTrace();
+		}
+		
+		return gson.toJson(comLikeList);
+	}
+
+	public int doCommentLike(CommentLikeDto commentLike) {
+		int insertRs = 0;
+		String didILike = null;
+		try {
+			didILike = bDao.SelectCommentLike(commentLike);
+			if(didILike == null) {
+				insertRs = bDao.insertCommentLike(commentLike);
+			} else {
+				insertRs = -1;
+			}
+			
+		} catch(Exception e) {
+			e.printStackTrace();
+		}
+		return insertRs;
 	}
 }

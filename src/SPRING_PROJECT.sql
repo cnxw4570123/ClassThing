@@ -75,9 +75,26 @@ constraint pk_lmid_lbno primary key(lmid, lbno)
 desc boardlike;
 
 select lstate, count(*) as count from boardlike where lbno = 1 group by lstate;
-
 insert into boardlike values ('test02', 1, '1');
 insert into boardlike values ('admin', 1, '0');
 commit;
 delete from boardlike;
 
+create table commentLike(
+    likemid nvarchar2(20) not null,
+    likecno number not null,
+    likestate nchar(1), 
+
+constraint pk_like_mid_cno primary key(likemid, likecno),
+constraint fk_likemid foreign key(likemid) references members(mid),
+constraint fk_likecno foreign key(likecno) references comments(cno) on delete cascade;
+);
+
+desc commentLike;
+select * from comments;
+commit;
+insert into commentlike values('test02', 2, '0');
+insert into commentlike values('admin', 2, '0');
+insert into commentlike values('test1', 2, '1');
+commit;
+select * from commentlike;

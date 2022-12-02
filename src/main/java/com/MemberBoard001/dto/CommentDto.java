@@ -11,4 +11,6 @@ public class CommentDto {
 	private String cdate;
 	private String cbno; //참고할 글 번호 
 	private String cstate;
+	
+	private int cLike; // 추천개수
 }

@@ -10,7 +10,8 @@ import org.apache.ibatis.annotations.Update;
 
 import com.MemberBoard001.dto.BoardDto;
 import com.MemberBoard001.dto.CommentDto;
-import com.MemberBoard001.dto.LikeDto;
+import com.MemberBoard001.dto.CommentLikeDto;
+import com.MemberBoard001.dto.BoardLikeDto;
 
 public interface BoardDao {
 
@@ -53,11 +54,25 @@ public interface BoardDao {
 	ArrayList<CommentDto> selectMyCommentList(String id);
 
 	@Select("SELECT LSTATE, COUNT(*) AS LCOUNT FROM BOARDLIKE WHERE LBNO =${lbno} GROUP BY LSTATE ")
-	ArrayList<LikeDto> selectBoardLike(int lbno);
+	ArrayList<BoardLikeDto> selectBoardLike(int lbno);
 
 	@Insert("INSERT INTO BOARDLIKE(LBNO, LMID, LSTATE) VALUES(${lbno},#{lmid},#{lstate})")
-	int insertBoardState(LikeDto like);
+	int insertBoardState(BoardLikeDto like);
 
 	@Select("SELECT LMID FROM BOARDLIKE WHERE LBNO = ${lbno} AND LMID = #{lmid}")
-	String selectLike(LikeDto like);
+	String selectLike(BoardLikeDto like);
+
+	@Select("SELECT BNO, BTITLE, BWRITER, BDATE, BHITS FROM BOARDS WHERE BNO IN (${c_bno})")
+	ArrayList<BoardDto> selectComRefBoard(String c_bno);
+
+	@Select("SELECT LIKECNO, COUNT(LIKESTATE) AS LIKECOUNT FROM COMMENTLIKE INNER JOIN COMMENTS ON COMMENTS.C_BNO = ${cbno}"
+			+ " AND COMMENTLIKE.LIKECNO IN COMMENTS.CNO GROUP BY LIKECNO")
+	ArrayList<CommentLikeDto> selectComLike(int cbno);
+
+	
+	@Insert("INSERT INTO COMMENTLIKE(LIKEMID, LIKECNO, LIKESTATE) VALUES(#{likemid}, ${likecno}, #{likestate})")
+	int insertCommentLike(CommentLikeDto commentLike);
+	
+	@Select("SELECT LIKEMID FROM COMMENTLIKE WHERE LIKEMID = #{likemid} AND LIKECNO = ${likecno}")
+	String SelectCommentLike(CommentLikeDto commentLike);
 }

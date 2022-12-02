@@ -110,17 +110,18 @@ public class MemberController {
 		
 		//2. 아이디로 게시글 찾기
 		ArrayList<BoardDto> boardList = bsvc.getMyBoardList(id);
-		System.out.println(boardList);
+//		System.out.println(boardList);
 		mav.addObject("myBoards", boardList);
 		
 		//3. 아이디로 댓글 찾기(댓글 누르면 해당 글의 해당 위치로 forwarding)
 		ArrayList<CommentDto> commentList = bsvc.getMyCommentList(id);
-		System.out.println(commentList);
-		
-		//4. 글목록 다 가져오자
-		ArrayList<BoardDto> myBoardComList = bsvc.getMyBoardList(commentList);
-		
+//		System.out.println(commentList);
 		mav.addObject("myComments", commentList);
+		
+		//4. cbno로 글 검색해서 가져오기
+		ArrayList<BoardDto> myBoardComList = bsvc.getMyBoardList(commentList);
+		System.out.println(myBoardComList);
+		mav.addObject("refBoards", myBoardComList);
 		mav.setViewName("Member/MemberInfo");
 		return mav;
 	}

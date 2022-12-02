@@ -300,6 +300,7 @@
 	}
     </script>
     <script type="text/javascript">
+    //전역 변수 cbno : 현재 보고 있는 글 번호
     const cbno = '${board.bno}';
     let loginID = '${sessionScope.loginID}';
     $(document).ready(function(){
@@ -339,7 +340,6 @@
     	});
     }
     
-    
     //댓글 목록 받아오는 기능 
 	function replyList(cbno){
 		console.log('댓글 목록 조회 replyList(cbno)');
@@ -353,8 +353,7 @@
 				let output = "";
 				for(let i = 0; i < comList.length; i++){
 					console.log(comList[i].cwriter + " : " + comList[i].ccontent);
-					output +='<form id="comListForm" action="${pageContext.request.contextPath}/reviseComment" method="post">'+
-					'<div class="card border-left-primary shadow h-100 py-2">'+
+			output +='<div class="card border-left-primary shadow h-100 py-2">'+
 						'<div class="card-body">'+
 							'<div class="row no-gutters align-items-center">'+
 								'<div class="col mr-2">'+
@@ -363,20 +362,23 @@
 										'<span class="text-primary">'+comList[i].cwriter+'</span>'+
 										'<span class="text-uppercase pl-2">'+comList[i].cdate+'</span>'+
 					 				'</div>'+
+					 				'<button type="button" class="btn border-primary text-primary" onclick="comLike('+comList[i].cno+', \'0\')">'+ // 클릭하면 추천수 업!
+										'<i class="p-0 far fa-thumbs-up">추천</i><span id="likeCount'+comList[i].cno +'"></span>'+
+									'</button>'+
 					 				'<hr class="my-1">'+
 					 				'<input type="hidden" name="revCno" value="'+comList[i].cno +'">'+
 					 				'<textarea name="revCcom" id="rcomment'+comList[i].cno+'" readonly="readonly" class="retext mb-2 border-0 font-weight-bold text-gray-800 w-100">'+ 
 									comList[i].ccontent +'</textarea></div>'+
 									'<div class="col-auto">';
 									if(loginID == comList[i].cwriter){
-										//ajax를 사용하는 방법
 										output +='<button type="button" class="btn btn-sm btn-success btn-user" onclick="revCom('+comList[i].cno+')">수정</button>'+
 												 '<button type="button" class="btn btn-sm btn-danger btn-user" onclick="delCom('+ comList[i].cno +')">삭제</btton>';	
 									}
-									output+= '</div></div></div></div></form>';
+									output+= '</div></div></div></div>';
 				}
 				$("#replyListArea").html(output);
 				comRevCk = false;
+				getLikeCount(cbno);
 			}
 		});
 	}
@@ -455,7 +457,56 @@
     	} else{
     		alert("로그인 후 이용가능합니다.");
     	}
-    	
+    }
+    
+    //댓글 좋아요 개수 출력
+    function getLikeCount(cbno){ // 해당페이지에 작성된 댓글
+    	$.ajax({
+    		type:"get",
+    		url:"${pageContext.request.contextPath}/ComLikeCount",
+    		data:{"cbno" : cbno},
+    		dataType:"json",
+    		async:false,
+    		success:function(result){
+    			console.log('댓글 좋아요 기능 출력')
+    			console.log(result);
+    			for(comLikes of result){
+   				console.log(comLikes == null);
+    			let spanId = "#likeCount"+comLikes.likecno;
+    			console.log("spanId : "+spanId);
+	  			$(spanId).text(" "+comLikes.likecount);
+    			}
+    		}
+    	});
+    }
+    
+    
+     function comLike(cno, likestate){
+    	$.ajax({
+    		type:"post",
+    		url:"${pageContext.request.contextPath}/ComLike",
+    		data: {
+    			"likemid" : '${sessionScope.loginID}',
+    			"likecno" : cno,
+    			"likestate" : likestate
+    			  },
+    		async:false,
+    		success: function(insRs){
+    			console.log("댓글 추천 기능 수행결과 : " + insRs);
+				switch(insRs){
+				case "YEPP":
+					alert("댓글 추천에 성공했습니다.");
+					break;
+				case "YOUDID":
+					alert("이미 추천하신 댓글입니다.");
+					break;
+				case "NOPE":
+					alert("댓글 추천에 실패했습니다.");
+					break;
+				}
+				replyList(cbno);
+    		}
+    	});  
     }
     </script>
 </body>

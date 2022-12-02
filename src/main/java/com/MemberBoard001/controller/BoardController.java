@@ -14,8 +14,9 @@ import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import com.MemberBoard001.dto.BoardDto;
+import com.MemberBoard001.dto.BoardLikeDto;
 import com.MemberBoard001.dto.CommentDto;
-import com.MemberBoard001.dto.LikeDto;
+import com.MemberBoard001.dto.CommentLikeDto;
 import com.MemberBoard001.service.Bservice;
 
 @Controller
@@ -84,10 +85,6 @@ public class BoardController {
 		System.out.println("글 내용 보기 요청");
 		System.out.println("글번호 : " + bno); //글번호 전송 
 		BoardDto boardInfo = bsvc.getBoard(bno);
-//		String boardContent = boardInfo.getBcontent();
-//		boardContent = boardContent.replace(" ", "&nbsp").replace("\n", "<br>");
-//		System.out.println("글 내용 : "+boardContent);
-//		boardInfo.setBcontent(boardContent);
 		mav.addObject("board", boardInfo);
 		mav.setViewName("/Board/BoardContent");
 		return mav;
@@ -168,7 +165,7 @@ public class BoardController {
 	
 	
 	@RequestMapping(value="/BoardLike") //좋아요나 싫어요 버튼 누르면
-	public @ResponseBody String boardLike(LikeDto like) {
+	public @ResponseBody String boardLike(BoardLikeDto like) {
 		String result = "비추천";
 		if(like.getLstate().equals("0")) {
 			result="추천";
@@ -182,5 +179,26 @@ public class BoardController {
 			result= insertRs +"";
 		}
 		return result;
+	}
+	
+	@RequestMapping("/ComLikeCount")
+	public @ResponseBody String comLikeCount(int cbno){
+		System.out.println("댓글 추천수 조회 기능 호출");
+		String likeJson = bsvc.getComLikeCount(cbno);
+		System.out.println(likeJson);
+		return likeJson;
+	}
+	
+	@RequestMapping("/ComLike")
+	public @ResponseBody String comLike(CommentLikeDto commentLike) {
+		System.out.println("댓글 추천 기능 호출");
+		int insertRs = bsvc.doCommentLike(commentLike);
+		String likeRs = "Nope";
+		if(insertRs > 0) {
+			likeRs = "YEPP";
+		} else if(insertRs == -1) {
+			likeRs = "YOUDID";
+		}
+		return likeRs;
 	}
 }
